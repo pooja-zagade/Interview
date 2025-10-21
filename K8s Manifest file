@@ -1,0 +1,81 @@
+# Deployment.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  labels:
+    app: my-app
+    type: frontend
+    environment: production
+  spec:
+  template:
+    metadata:
+      labels:
+        app: my-app
+        type: frontend
+        environment: production
+      spec:
+      containers:
+       labels:
+          app: my-app
+          type: frontend
+          environment: production
+
+    spec:
+       containers:        
+          - name: my-container
+            image: nginx:latest
+          - name : busybox-container
+            image: busybox:latest
+    replicas: 3
+    selector:
+      matchLabels:
+        app: my-app
+        type: frontend
+        environment: production
+
+# Pod.yml
+apiVersion: v1
+kind : pod
+metadata:
+  name: my-pod
+  labels:
+    app: my-app
+    type: frontend
+    environment: production
+spec:
+  containers:
+    - name: my-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      
+# replicaset.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  labels:
+    app: my-app
+    type: frontend
+    environment: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      type: frontend
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: my-app
+        type: frontend
+        environment: production
+    spec:
+      containers:
+        - name: my-container
+          image: nginx:latest
+        - name : busybox-container
+          image: busybox:latest
+         
