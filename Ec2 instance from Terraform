@@ -1,0 +1,59 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "my_ec2" {
+  ami           = "ami-0c02fb55956c7d316"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "Terraform-EC2"
+  }
+}
+
+# Explanation:
+This Terraform configuration creates an EC2 instance in AWS.
+-The first block —
+provider "aws" — tells Terraform which cloud provider to use and sets the AWS region to us-east-1.
+-The second block —
+resource "aws_instance" "my_ec2" — defines the actual EC2 instance that Terraform will create.
+Inside it,
+
+-ami specifies the Amazon Machine Image ID — it defines which operating system the instance will have.
+
+-instance_type defines the hardware configuration — here, t2.micro, which is eligible for the free tier.
+
+-tags are used for identification — here, we’ve given it a name “Terraform-EC2” so it’s easy to find in the AWS console.
+
+After writing this file, we run terraform init to initialize, terraform plan to preview the changes, and terraform apply to create the EC2 instance.”
+
+Incase you Ask add networking then add this
+
+resource "aws_security_group" "web_sg" {
+  name        = "web-sg"
+  description = "Allow SSH and HTTP"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+We can also define a Security Group to control inbound and outbound traffic.
+The ingress block allows incoming ports like SSH (22) or HTTP (80),
+and the egress block allows outbound traffic to the internet
