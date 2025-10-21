@@ -1,0 +1,29 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "my-terraform-demo-bucket1234"   # Bucket name must be globally unique
+  acl    = "private"                        # Access control (private, public-read, etc.)
+
+  tags = {
+    Name        = "MyTerraformBucket"
+    Environment = "Dev"
+  }
+}
+
+# Explanation 
+-The provider "aws" block defines which cloud provider and region to use.
+-The resource "aws_s3_bucket" block actually creates the S3 bucket.
+-The bucket argument gives a unique name to the bucket.
+-The acl sets permissions — here it’s private.
+-The tags help identify and manage the resource easily in AWS.
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.my_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+This enables versioning, so if any object is modified or deleted, previous versions are retained
