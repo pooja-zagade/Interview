@@ -1,0 +1,48 @@
+# ClusterIp
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+  labels:
+    app: my-app
+spec:
+  selector:
+    app: my-app        # must match pod labels
+  type: ClusterIP      # options: ClusterIP, NodePort, LoadBalancer
+  ports:
+    - port: 80         # service port
+      targetPort: 8080 # container port
+
+# NodePort
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nodeport-service
+spec:
+  selector:
+    app: my-app
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30080
+
+# Loadbalancer
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-loadbalancer
+  labels:
+    app: my-app
+spec:
+  selector:
+    app: my-app           # must match the Pod/Deployment label
+  type: LoadBalancer      # exposes service externally using cloud provider's LB
+  ports:
+    - protocol: TCP
+      port: 80            # external port exposed to users
+      targetPort: 8080    # internal container port
+
