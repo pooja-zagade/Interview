@@ -1,0 +1,103 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
+# -------------------------
+# Security Group for RDS
+# -------------------------
+resource "aws_security_group" "rds_sg" {
+  name        = "rds-sg"
+  description = "Allow MySQL access"
+  vpc_id      = "vpc-0123456789abcdef0"  # Replace with your VPC ID
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]          # Open to all for testing, restrict in production
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "rds-security-group"
+  }
+}
+
+# -------------------------
+# RDS Instance
+# -------------------------
+resource "aws_db_instance" "my_rds" {
+  allocated_storage    = 20
+  engine               = "mysql"
+  engine_version       = "8.0"
+  instance_class       = "db.t3.micro"
+  name                 = "mydatabase"
+  username             = "admin"
+  password             = "Admin12345"    # Hardcoded for demo; use secrets in production
+  db_subnet_group_name = "my-subnet-group" # Replace with actual subnet group
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  skip_final_snapshot  = true
+
+  tags = {
+    Name = "Hardcoded-RDS"
+  }
+}
+
+# -------------------------
+# Outputs
+# -------------------------
+output "rds_endpoint" {
+  value = aws_db_instance.my_rds.endpoint
+}
+
+output "rds_id" {
+  value = aws_db_instance.my_rds.id
+}
+
+# Explanation 
+This Terraform code creates a MySQL RDS instance in AWS.
+
+1️⃣ Provider:
+
+provider "aws" sets the AWS region to us-east-1.
+
+2️⃣ Security Group:
+
+aws_security_group defines network access to the RDS instance.
+
+Ingress allows MySQL traffic on port 3306.
+
+Egress allows all outbound traffic.
+
+3️⃣ RDS Instance:
+
+aws_db_instance creates the RDS instance.
+
+engine and engine_version specify MySQL 8.0.
+
+instance_class defines hardware size (db.t3.micro).
+
+username and password set admin credentials.
+
+vpc_security_group_ids ensures RDS is accessible only through the defined security group.
+
+skip_final_snapshot = true prevents snapshot creation on destroy (for demo/testing).
+
+4️⃣ Outputs:
+
+rds_endpoint gives the connection endpoint to use in applications.
+
+rds_id shows the resource ID for reference.
+
+“This setup is fully hardcoded and can be applied directly with terraform init, plan, and apply. In production, passwords and subnet groups should be managed securely using variables or AWS Secrets Manager.
+                                                                  This Terraform file creates a fully functional MySQL RDS instance in AWS.
+First, we define a security group to allow MySQL traffic.
+Then we create the RDS instance with engine, instance type, credentials, and security group.
+Finally, the outputs provide the endpoint and ID so other resources or applications can use them.
+Everything is hardcoded for simplicity, but in production, we’d use variables or secrets for credentials and subnet groups
