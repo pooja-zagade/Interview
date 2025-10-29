@@ -1,38 +1,41 @@
-# Deployment.yml 
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: my-pod
+  name: my-deployment
   labels:
     app: my-app
     type: frontend
     environment: production
-  spec:
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      type: frontend
+      environment: production
+
   template:
     metadata:
       labels:
         app: my-app
         type: frontend
         environment: production
-      spec:
-      containers:
-       labels:
-          app: my-app
-          type: frontend
-          environment: production
-
     spec:
-       containers:        
-          - name: my-container
-            image: nginx:latest
-          - name : busybox-container
-            image: busybox:latest
-    replicas: 3
-    selector:
-      matchLabels:
-        app: my-app
-        type: frontend
-        environment: production
+      containers:
+        - name: nginx-container
+          image: nginx:latest
+        - name: busybox-container
+          image: busybox:latest
+## Explanation :
+Section	           Purpose
+apiVersion :	Defines API version used for Deployment.
+kind	     :Specifies object type (Deployment).
+metadata	 :Basic identifying info (name, labels).
+spec.replicas	:How many Pods to run.
+spec.selector	:Which Pods this Deployment manages.
+spec.template	:Defines what each Pod looks like (metadata + containers).
+containers	:Defines container names and images inside each Pod.
 
 # Pod.yml
 apiVersion: v1
