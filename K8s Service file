@@ -46,3 +46,8 @@ spec:
       port: 80            # external port exposed to users
       targetPort: 8080    # internal container port
 
+This YAML defines a LoadBalancer Service that exposes the Pods labeled app: my-app to external traffic.
+It listens on port 80 externally and forwards requests to port 8080 inside the Pods.
+The Service type LoadBalancer automatically provisions a cloud load balancer and assigns a public IP to route traffic 
+to the backend Pods.
+
